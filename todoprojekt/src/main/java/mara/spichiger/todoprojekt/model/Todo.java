@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -14,14 +15,20 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String department;
+    private String title;
+    private String description;
     private String assignedTo;
 
-    // Das @Enumerated sorgt dafür, dass der Status als Text (STRING)
-    // in der Datenbank landet, nicht als Zahl.
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        if (status == null) {
+            status = Status.OPEN;
+        }
+    }
 }

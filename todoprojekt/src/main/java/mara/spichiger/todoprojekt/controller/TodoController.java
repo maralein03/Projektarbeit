@@ -1,7 +1,7 @@
 package mara.spichiger.todoprojekt.controller;
 
 import mara.spichiger.todoprojekt.model.Todo;
-import mara.spichiger.todoprojekt.repository.TodoRepository;
+import mara.spichiger.todoprojekt.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,19 +13,18 @@ import java.util.List;
 public class TodoController {
 
     @Autowired
-    private TodoRepository todoRepository;
+    private TodoService todoService;
 
-    // Kriterium: Liste aller Aufgaben abrufen
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_READ')")
+    @PreAuthorize("hasRole('READ_TODO')")
     public List<Todo> getAllTodos() {
-        return todoRepository.findAll();
+        return todoService.getAllTodos();
     }
 
-    // Kriterium: Neue Aufgabe erstellen (Nur Ausbilder/Update Rolle)
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_UPDATE')")
+    @PreAuthorize("hasRole('UPDATE_TODO')")
     public Todo createTodo(@RequestBody Todo todo) {
-        return todoRepository.save(todo);
+        return todoService.createTodo(todo);
     }
+
 }

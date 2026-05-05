@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TodoRepository extends JpaRepository<Todo, Long> {
-    // Hier erbt Spring Boot automatisch alle Methoden wie save(), findAll(), deleteById()
+    // Spring Boot erbst automatisch alle Methoden wie save(), findAll(),
+    // deleteById()
 }
