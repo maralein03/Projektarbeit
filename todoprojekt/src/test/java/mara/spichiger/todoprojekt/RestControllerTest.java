@@ -29,21 +29,21 @@ public class RestControllerTest {
     private TodoRepository todoRepository;
 
     @Test
-    @WithMockUser(roles = "UPDATE")
+    @WithMockUser(roles = "READ_TODO")
     void testGetAllTodos() throws Exception {
         mockMvc.perform(get("/api/todos"))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(roles = "UPDATE")
+    @WithMockUser(roles = "UPDATE_TODO")
     void testCreateTodo() throws Exception {
-        String todoJson = "{\"firstName\":\"Mara\",\"lastName\":\"Spichiger\",\"status\":\"OPEN\"}";
+        String todoJson = "{\"title\":\"Test Todo\",\"description\":\"Test Beschreibung für API\",\"status\":\"OPEN\"}";
 
         mockMvc.perform(post("/api/todos")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(todoJson))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(todoJson))
                 .andExpect(status().isOk());
     }
 }
