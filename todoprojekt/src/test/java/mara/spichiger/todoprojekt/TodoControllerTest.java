@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(TodoController.class)
-public class RestControllerTest {
+public class TodoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

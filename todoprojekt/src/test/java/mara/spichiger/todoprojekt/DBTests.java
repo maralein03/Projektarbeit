@@ -19,12 +19,16 @@ public class DBTests {
 
     @Test
     void testDatabaseConnection() {
+
+        // arrange
         Todo todo = new Todo();
         todo.setTitle("DB-Test Todo");
         todo.setDescription("Test-Beschreibung für Datenbankverbindung");
         todo.setStatus(Status.OPEN);
-
+        // act
         Todo saved = todoRepository.save(todo);
+
+        // assert
         assertNotNull(saved.getId());
     }
 }
