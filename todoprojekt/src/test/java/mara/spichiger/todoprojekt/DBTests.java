@@ -25,6 +25,7 @@ public class DBTests {
         todo.setTitle("DB-Test Todo");
         todo.setDescription("Test-Beschreibung für Datenbankverbindung");
         todo.setStatus(Status.OPEN);
+        
         // act
         Todo saved = todoRepository.save(todo);
 
