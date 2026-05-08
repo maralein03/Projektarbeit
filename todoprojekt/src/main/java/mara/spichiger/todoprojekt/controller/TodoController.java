@@ -28,7 +28,6 @@ public class TodoController {
     // Read all
     @Operation(summary = "Liste aller Todos", description = "Gibt alle Todo-Einträge zurück.")
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_READ')")
     public List<Todo> getAllTodos() {
         return todoRepository.findAll();
     }
@@ -36,7 +35,6 @@ public class TodoController {
     // Read single
     @Operation(summary = "Todo abrufen", description = "Gibt ein einzelnes Todo nach ID zurück, falls vorhanden.")
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_READ')")
     public ResponseEntity<Todo> getTodo(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id) {
         return todoRepository.findById(id)
                 .map(ResponseEntity::ok)
@@ -45,7 +43,6 @@ public class TodoController {
 
     // Update
     @Operation(summary = "Todo aktualisieren", description = "Aktualisiert ein Todo, wenn es existiert.")
-    @PreAuthorize("hasRole('ROLE_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<Todo> updateTodo(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id, @Valid @RequestBody Todo todo) {
         return todoRepository.findById(id).map(existing -> {

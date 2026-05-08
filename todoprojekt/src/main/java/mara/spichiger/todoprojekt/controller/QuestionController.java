@@ -27,7 +27,6 @@ public class QuestionController {
 
     @Operation(summary = "Frage hinzufügen", description = "Fügt dem Todo eine neue Frage hinzu.")
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_READ')")
     public ResponseEntity<Question> addQuestion(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id, @RequestBody Question question) {
         return todoRepository.findById(id).map(todo -> {
             question.setTodo(todo);
@@ -38,7 +37,6 @@ public class QuestionController {
 
     @Operation(summary = "Fragen abrufen", description = "Listet alle Fragen zum angegebenen Todo auf.")
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_READ')")
     public List<Question> getQuestions(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id) {
         return questionRepository.findByTodoId(id);
     }
