@@ -22,11 +22,14 @@ public class AdminController {
     @Autowired
     private TodoRepository todoRepository;
 
+    @Autowired
+    private TodoService todoService;
+
     @Operation(summary = "Todo erstellen", description = "Legt einen neuen Todo-Eintrag an. Nur für Ausbilder (ROLE_UPDATE).")
     @PostMapping
     @PreAuthorize("hasRole('ROLE_UPDATE')")
     public ResponseEntity<Todo> createTodo(@Valid @RequestBody Todo todo) {
-        Todo saved = todoRepository.save(todo);
+        Todo saved = todoService.createTodo(todo);
         return ResponseEntity.status(201).body(saved);
     }
 
