@@ -19,7 +19,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/TODO
-          jwk-set-uri: http://localhost:8080/realms/TODO/protocol/openid-connect/certs
+          #jwk-set-uri: http://localhost:8080/realms/TODO/protocol/openid-connect/certs
 
 springdoc:
   swagger-ui:
