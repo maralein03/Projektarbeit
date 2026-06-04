@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/todos")
+@CrossOrigin(origins = "http://localhost:5173")
 @Validated
 @Tag(name = "Todo Controller", description = "Liest und aktualisiert vorhandene Todo-Einträge.")
 public class TodoController {
