@@ -63,10 +63,10 @@ public class SecurityConfig {
         }
 
         Collection<String> roles = (Collection<String>) realmAccess.get("roles");
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role)) // Mappt die Rollen zu z.B. ROLE_UPDATE oder ROLE_READ
-                .collect(Collectors.toList());
-    }
+      .map(role -> {
+    String finalRole = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+    return new SimpleGrantedAuthority(finalRole);
+})
 
     // Globale CORS-Konfiguration für deine React-App auf Port 5173
     @Bean
