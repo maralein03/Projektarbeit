@@ -16,15 +16,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/todos")
 @Validated
-@Tag(name = "Status Controller", description = "Ändert den Status eines Todos und nimmt Aufgaben an.")
+@Tag(name = "Status Controller", description = "Ändert den Status eines Todos und nimmt Aufgaben an (nur für Lernende mit ROLE_READ).")
 public class StatusController {
 
     @Autowired
     private TodoRepository todoRepository;
 
     // Aufgabe annehmen
-    @Operation(summary = "Aufgabe annehmen", description = "Weist die Aufgabe einer Person zu und setzt den Status auf IN_PROGRESS.")
-      @PatchMapping("/{id}/accept")
+    @Operation(summary = "Aufgabe annehmen", description = "Weist die Aufgabe einer Person zu und setzt den Status auf IN_PROGRESS. Erfordert ROLE_READ (Lernender).")
+    @PatchMapping("/{id}/accept")
+    @PreAuthorize("hasRole('ROLE_READ')")
     public ResponseEntity<Todo> acceptTodo(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id, @RequestParam String name) {
         return todoRepository.findById(id).map(todo -> {
             todo.setAssignedTo(name);
@@ -34,8 +35,9 @@ public class StatusController {
     }
 
     // Status auf DONE oder QUESTION setzen
-    @Operation(summary = "Status ändern", description = "Ändert den Status eines Todo-Eintrags (z.B. DONE oder QUESTION).")
-     @PatchMapping("/{id}/status")
+    @Operation(summary = "Status ändern", description = "Ändert den Status eines Todo-Eintrags (z.B. DONE oder QUESTION). Erfordert ROLE_READ (Lernender).")
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ROLE_READ')")
     public ResponseEntity<Todo> changeStatus(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id, @RequestParam Status status) {
         return todoRepository.findById(id).map(todo -> {
             todo.setStatus(status);
