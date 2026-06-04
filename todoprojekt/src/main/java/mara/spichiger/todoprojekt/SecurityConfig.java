@@ -63,10 +63,15 @@ public class SecurityConfig {
         }
 
         Collection<String> roles = (Collection<String>) realmAccess.get("roles");
-      .map(role -> {
-    String finalRole = role.startsWith("ROLE_") ? role : "ROLE_" + role;
-    return new SimpleGrantedAuthority(finalRole);
-})
+        
+        // FIX: Syntaxfehler behoben und Schutz vor doppeltem "ROLE_"-Präfix integriert
+        return roles.stream()
+                .map(role -> {
+                    String finalRole = role.startsWith("ROLE_") ? role : "ROLE_" + role;
+                    return new SimpleGrantedAuthority(finalRole);
+                })
+                .collect(Collectors.toList());
+    }
 
     // Globale CORS-Konfiguration für deine React-App auf Port 5173
     @Bean
