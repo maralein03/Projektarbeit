@@ -28,7 +28,7 @@ public class AdminController {
 
     @Operation(summary = "Todo erstellen", description = "Legt einen neuen Todo-Eintrag an. Nur für Ausbilder (ROLE_UPDATE).")
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_UPDATE')")
+    @PreAuthorize("hasRole('UPDATE')")
     public ResponseEntity<Todo> createTodo(@Valid @RequestBody Todo todo) {
         Todo saved = todoService.createTodo(todo);
         return ResponseEntity.status(201).body(saved);
@@ -36,7 +36,7 @@ public class AdminController {
 
     @Operation(summary = "Todo löschen", description = "Löscht ein Todo nach ID, wenn es vorhanden ist. Nur für Ausbilder (ROLE_UPDATE).")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_UPDATE')")
+    @PreAuthorize("hasRole('UPDATE')")
     public ResponseEntity<Void> deleteTodo(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id) {
         if (todoRepository.existsById(id)) {
             todoRepository.deleteById(id);
