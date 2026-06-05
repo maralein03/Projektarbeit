@@ -1,0 +1,50 @@
+package mara.spichiger.todoprojekt;
+
+import mara.spichiger.todoprojekt.controller.AdminController;
+import mara.spichiger.todoprojekt.controller.TodoController;
+import mara.spichiger.todoprojekt.repository.TodoRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
+@WebMvcTest({TodoController.class, AdminController.class})
+public class TodoControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private JwtDecoder jwtDecoder;
+
+    @MockBean
+    private TodoRepository todoRepository;
+
+    @Test
+    @WithMockUser(roles = "READ_TODO")
+    void testGetAllTodos() throws Exception {
+        mockMvc.perform(get("/api/todos"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "UPDATE_TODO")
+    void testCreateTodo() throws Exception {
+        String todoJson = "{\"title\":\"Test Todo\",\"description\":\"Test Beschreibung für API\",\"status\":\"OPEN\"}";
+
+        mockMvc.perform(post("/api/todos")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(todoJson))
+                .andExpect(status().isCreated());
+    }
+}

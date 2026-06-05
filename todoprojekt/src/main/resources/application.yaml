@@ -1,3 +1,29 @@
+server:
+  port: 8081
+
 spring:
-  application:
-    name: todoprojekt
+  datasource:
+    url: jdbc:postgresql://localhost:5432/todo_db
+    username: postgres
+    password: todo
+    driverClassName: org.postgresql.Driver
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/TODO
+          #jwk-set-uri: http://localhost:8080/realms/TODO/protocol/openid-connect/certs
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  name: todoprojekt
