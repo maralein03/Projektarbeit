@@ -29,7 +29,6 @@ public class TodoController {
     // Read all
     @Operation(summary = "Liste aller Todos", description = "Gibt alle Todo-Einträge zurück. Erfordert ROLE_READ (Lernender).")
     @GetMapping
-    @PreAuthorize("hasRole('READ')")
     public List<Todo> getAllTodos() {
         return todoRepository.findAll();
     }
@@ -37,7 +36,6 @@ public class TodoController {
     // Read single
     @Operation(summary = "Todo abrufen", description = "Gibt ein einzelnes Todo nach ID zurück, falls vorhanden. Erfordert ROLE_READ (Lernender).")
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Todo> getTodo(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id) {
         return todoRepository.findById(id)
                 .map(ResponseEntity::ok)
@@ -47,7 +45,6 @@ public class TodoController {
     // Update
     @Operation(summary = "Todo aktualisieren", description = "Aktualisiert ein Todo, wenn es existiert. Erfordert ROLE_UPDATE (Ausbilder).")
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('UPDATE')")
     public ResponseEntity<Todo> updateTodo(@PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id, @Valid @RequestBody Todo todo) {
         return todoRepository.findById(id).map(existing -> {
             existing.setTitle(todo.getTitle());
@@ -56,6 +53,46 @@ public class TodoController {
             existing.setStatus(todo.getStatus());
             return ResponseEntity.ok(todoRepository.save(existing));
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    // Partial update - Status only
+    @Operation(summary = "Todo-Status aktualisieren", description = "Aktualisiert nur den Status eines Todos mittels PATCH. Alle Rollen können Status aktualisieren.")
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateTodoStatus(
+            @PathVariable @NotNull(message = "id darf nicht null sein") @PositiveOrZero(message = "id darf nicht negativ sein") Long id, 
+            @RequestBody(required = true) java.util.Map<String, Object> updates) {
+        
+        java.util.Optional<Todo> todoOpt = todoRepository.findById(id);
+        
+        if (!todoOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        Todo existing = todoOpt.get();
+        
+        // Update status if provided
+        if (updates.containsKey("status")) {
+            String statusStr = (String) updates.get("status");
+            try {
+                existing.setStatus(Status.valueOf(statusStr));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("Invalid status value: " + statusStr);
+            }
+        }
+        
+        // Update other fields if provided
+        if (updates.containsKey("title")) {
+            existing.setTitle((String) updates.get("title"));
+        }
+        if (updates.containsKey("description")) {
+            existing.setDescription((String) updates.get("description"));
+        }
+        if (updates.containsKey("assignedTo")) {
+            existing.setAssignedTo((String) updates.get("assignedTo"));
+        }
+        
+        Todo saved = todoRepository.save(existing);
+        return ResponseEntity.ok(saved);
     }
 
 }

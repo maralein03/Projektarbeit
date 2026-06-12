@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -29,6 +30,9 @@ public class Todo {
     private Status status;
 
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Question> questions;
 
     public Long getId() {
         return id;
